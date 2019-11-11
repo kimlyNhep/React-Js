@@ -12,3 +12,9 @@
     border: 1px solid #ccc;
     padding: 10px;
 }
+
+/* @media (min-width: 500px) {
+    .Person {
+        width: 450px;
+    }
+} */
