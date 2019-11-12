@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
-import './App.css';
-import Person from '../components/Person/Person';
+import classStyle from './App.css';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor');
+  }
   state = {
     persons: [
       { id: '001', name: 'Max', age: 21 },
       { id: '002', name: 'Mary', age: 34 },
       { id: '003', name: 'Stev', age: 25 }
-    ]
+    ],
+    showPerson: false
   };
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStatedFromProps', props);
+    return state;
+  }
+
+  componentDidMount() {
+    console.log('[App.js] componentDidMount');
+  }
 
   switchNameHandler = newName => {
     this.setState({
@@ -52,55 +67,25 @@ class App extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherite',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
-
+    console.log('[App.js] render');
     var persons = null;
-
     if (this.state.showPerson) {
       persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return (
-              <Person
-                click={() => this.deletePersonHandler(index)}
-                name={person.name}
-                age={person.age}
-                key={person.id}
-                changed={event => this.changeNameHandler(event, person.id)}
-              />
-            );
-          })}
-        </div>
+        <Persons
+          persons={this.state.persons}
+          clicked={this.deletePersonHandler}
+          changed={this.changeNameHandler}
+        />
       );
-      style.backgroundColor = 'red';
-    }
-
-    const classes = [];
-    if (this.state.persons.length <= 2) {
-      classes.push('red'); // classes = ['red']
-    }
-    if (this.state.persons.length <= 1) {
-      classes.push('bold');
     }
 
     return (
-      <div className='App'>
-        <h1>Hi There!</h1>
-        <p className={classes.join(' ')}>This is really working!</p>
-        <button
-          className='button'
-          style={style}
-          onClick={this.togglePersonHandler}
-        >
-          Toggle Persons
-        </button>
+      <div className={classStyle.App}>
+        <Cockpit
+          persons={this.state.persons}
+          showPerson={this.state.showPerson}
+          toggle={this.togglePersonHandler}
+        />
         {persons}
       </div>
     );
