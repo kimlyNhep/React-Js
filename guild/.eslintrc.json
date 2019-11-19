@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": ["react-app", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "prettier/prettier": [
+      "warn",
+      {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "trailingComma": "none",
+        "semi": true,
+        "bracketSpacing": true,
+        "jsxSingleQuote": true,
+        "singleQuote": true
+      }
+    ],
+    "no-console": "off"
+  }
+}
