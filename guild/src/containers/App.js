@@ -1,16 +1,47 @@
 import React, { Component } from 'react';
-import Person from './Components/Person/Person';
-import './App.css';
+import Persons from '../Components/Persons/Persons';
+import Cockpit from '../Components/Cockpit/Cockpit';
+import classStyle from './App.css';
+import withClasses from '../hoc/WithClasses';
+import Aux from '../hoc/Auxiliary';
 
 class App extends Component {
-  state = {
-    persons: [
-      { id: 'p001', name: 'Kimly', age: 21 },
-      { id: 'p002', name: 'Rotha', age: 21 },
-      { id: 'p003', name: 'Chetha', age: 21 }
-    ],
-    showPerson: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      persons: [
+        { id: 'p001', name: 'Kimly', age: 21 },
+        { id: 'p002', name: 'Rotha', age: 21 },
+        { id: 'p003', name: 'Chetha', age: 21 }
+      ],
+      showPerson: false,
+      showCockpit: true,
+      changedCount: 0
+    };
+    console.log('[App.js] constructor');
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+
+  // componentWillMount() {
+  //   console.log('[App.js] componentWillMount');
+  // }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[App.js] shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    console.log('[App.js] componentDidUpdate');
+  }
+
+  componentDidMount() {
+    console.log('[App.js] componentDidMount');
+  }
 
   deletePersonHandler = index => {
     // const persons = this.state.persons.slice();
@@ -31,8 +62,11 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState({
-      persons: persons
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changedCount: prevState.changedCount + 1
+      };
     });
   };
 
@@ -42,54 +76,42 @@ class App extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherite',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
-
+    console.log('[App.js] render');
     let persons = null;
 
     if (this.state.showPerson) {
       persons = (
         <div>
-          {this.state.persons.map((person, index) => (
-            <Person
-              key={person.id}
-              name={person.name}
-              age={person.age}
-              clicked={this.deletePersonHandler.bind(this, index)}
-              changed={event => this.nameChangeHandler(event, person.id)}
-            />
-          ))}
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangeHandler}
+          />
         </div>
       );
-      style.backgroundColor = 'red';
-    }
-
-    let classes = [];
-
-    if (this.state.persons.length <= 2) {
-      classes.push('red');
-    }
-    if (this.state.persons.length <= 1) {
-      classes.push('bold');
     }
 
     return (
-      <div className='App'>
-        <h1>Hi, I'm a React App</h1>
-        <p className={classes.join(' ')}>This is really working!</p>
-        <button style={style} onClick={this.togglePersonHandler}>
-          Toggle Persons
+      <Aux>
+        <button
+          onClick={() => {
+            this.setState({ showCockpit: false });
+          }}
+        >
+          Show Cockpit
         </button>
+        {this.state.showCockpit ? (
+          <Cockpit
+            title={this.props.appTitle}
+            showPerson={this.state.showPerson}
+            personsLength={this.state.persons.length}
+            toggle={this.togglePersonHandler}
+          />
+        ) : null}
         {persons}
-      </div>
+      </Aux>
     );
   }
 }
 
-export default App;
+export default withClasses(App, classStyle.App);
