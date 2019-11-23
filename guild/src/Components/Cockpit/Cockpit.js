@@ -1,16 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import classStyle from './Cockpit.css';
+import Authentication from '../../context/auth-context';
 
 const Cockpit = props => {
+  const toggleBtnRef = useRef(null);
+  const authContext = useContext(Authentication);
+
+  console.log('Cockpit.js', authContext.Authenticated);
+
   useEffect(() => {
     console.log('[Cockpit.js] useEffect');
     // HTTP request
-    setTimeout(() => {
-      alert('Save data to the cloud');
-    }, 1000);
+    // setTimeout(() => {
+    //   alert('Save data to the cloud');
+    // }, 1000);
     // if we want to useEffect only for the first time
     //just put the second argument as an empty asrray([])
     // or we can call useEffect depend on the second argument ([a,b,c])
+    toggleBtnRef.current.click();
     return () => {
       console.log('[Cockpit.js] clean up work useEffect');
     };
@@ -44,9 +51,12 @@ const Cockpit = props => {
     <div className={classStyle.Cockpit}>
       <h1>{props.title}</h1>
       <p className={classes.join(' ')}>This is really working!</p>
-      <button onClick={props.toggle} className={btnClass}>
+      <button ref={toggleBtnRef} onClick={props.toggle} className={btnClass}>
         Toggle Persons
       </button>
+      <Authentication.Consumer>
+        {context => <button onClick={context.login}>Login</button>}
+      </Authentication.Consumer>
     </div>
   );
 };
