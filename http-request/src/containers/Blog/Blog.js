@@ -1,58 +1,44 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
+import FullPost from './FullPost/FullPost';
+import NewPost from './NewPost/NewPost';
 import './Blog.css';
+import Posts from './Posts/Posts';
+import { Route, NavLink, Switch } from 'react-router-dom';
 
 class Blog extends Component {
-  state = {
-    posts: [],
-    selectedPostId: null
-  };
-
-  componentDidMount() {
-    axios.get('http://jsonplaceholder.typicode.com/posts').then(response => {
-      const posts = response.data.slice(0, 4);
-      const updatePosts = posts.map(post => {
-        return {
-          ...post,
-          author: 'Max'
-        };
-      });
-      this.setState({ posts: updatePosts });
-    });
-    // get request need some time to wait until the request finish
-    // Basicly, JS did not wait the procces so we then to use .then() method
-    // to fetch the data
-  }
-
-  postSelectedHandler = id => {
-    this.setState({ selectedPostId: id });
-  };
-  render() {
-    const posts = this.state.posts.map(post => {
-      return (
-        <Post
-          title={post.title}
-          key={post.id}
-          author={post.author}
-          clicked={() => this.postSelectedHandler(post.id)}
-        />
-      );
-    });
-    return (
-      <div>
-        <section className="Posts">{posts}</section>
-        <section>
-          <FullPost id={this.state.selectedPostId} />
-        </section>
-        <section>
-          <NewPost />
-        </section>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className='Blog'>
+                <header>
+                    <nav>
+                        <ul>
+                            <li>
+                                <NavLink to='/' exact>
+                                    Home
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to={{
+                                        pathname: '/new-post',
+                                        hash: '#submit',
+                                        search: '?quick-submit=true'
+                                    }}
+                                >
+                                    New Post
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </nav>
+                </header>
+                <Route path='/' exact component={Posts} />
+                <Switch>
+                    <Route path='/new-post' component={NewPost} />
+                    <Route path='/:id' exact component={FullPost} />
+                </Switch>
+            </div>
+        );
+    }
 }
 
 export default Blog;
